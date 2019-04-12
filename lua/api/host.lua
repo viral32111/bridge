@@ -51,9 +51,7 @@ end
 
 function api.startServer(port)
 	if (api.server) then
-		print("The API server is already being hosted, closing it. (Run again to start)")
-		api.server:Close()
-		api.server = nil
+		print("The API server is already being hosted.")
 		return
 	end
 
