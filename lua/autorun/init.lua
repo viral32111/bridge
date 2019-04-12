@@ -2,6 +2,7 @@ if (CLIENT) then return end
 
 api = {}
 api.endpoints = {}
+api.server = nil
 
 require("bromsock")
 include("api/functions.lua")
@@ -29,4 +30,6 @@ hook.Add("InitPostEntity", "startAPI", function()
 	end)
 end)
 
--- lua_run api.server = api.startServer()
+concommand.Add("api_startserver", function()
+	api.server = api.startServer()
+end)

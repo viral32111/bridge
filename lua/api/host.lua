@@ -1,12 +1,5 @@
 require("bromsock")
 
--- 1: IP Banned?
--- 2: Endpoint Exists?
--- 3: IP Whitelisted?
--- 4: Method Matches?
--- 5: All arguments provided?
--- 6: Any errors?
-
 local function packetToTable(packet)
 	local packetTbl = {headers={}, content=nil}
 	local raw = packet:ReadStringAll()
