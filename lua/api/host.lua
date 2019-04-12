@@ -49,7 +49,7 @@ local function easyPacket(code, message)
 	return packet
 end
 
-function api.startServer()
+function api.startServer(port)
 	if (api.server) then
 		print("The API server is already being hosted, closing it. (Run again to start)")
 		api.server:Close()
@@ -58,7 +58,6 @@ function api.startServer()
 	end
 
 	local server = BromSock()
-	local port = 8123
 
 	if (not server:Listen(port)) then
 		print("API server failed to listen on port " .. port)

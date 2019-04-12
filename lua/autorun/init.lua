@@ -26,10 +26,16 @@ end
 
 hook.Add("InitPostEntity", "startAPI", function()
 	timer.Simple(1, function()
-		api.server = api.startServer()
+		api.server = api.startServer(8123)
 	end)
 end)
 
-concommand.Add("api_startserver", function()
-	api.server = api.startServer()
+concommand.Add("api_startserver", function(ply, cmd, args)
+	if (IsValid(ply)) then return end -- Console only
+	if (#args == 0) then
+		api.server = api.startServer(8123)
+	else
+		local port = tonumber(args[1])
+		api.server = api.startServer(port)
+	end
 end)
