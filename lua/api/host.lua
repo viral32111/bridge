@@ -50,6 +50,8 @@ local function easyPacket(code, message)
 end
 
 function api.startServer(port)
+	local ip = "192.168.0.2"
+
 	if (api.server) then
 		print("The API server is already being hosted.")
 		return
@@ -57,13 +59,13 @@ function api.startServer(port)
 
 	local server = BromSock()
 
-	if (not server:Listen(port)) then
-		print("API server failed to listen on port " .. port)
+	if (not server:Listen(ip, port)) then
+		print("API server failed to listen on " .. ip .. ":" .. port .. ".")
 		return
 	else
-		print("API server listening on port " .. port)
+		print("API server listening on " .. ip .. ":" .. port .. ".")
 	end
-	
+
 	server:SetCallbackAccept(function(server, client)
 		client:SetCallbackDisconnect(function(socket)
 			local address = socket:GetIP() .. ":" .. socket:GetPort()

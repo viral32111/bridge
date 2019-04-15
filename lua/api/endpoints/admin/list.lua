@@ -1,5 +1,5 @@
 local endpoint = {
-	path = "/admins",
+	path = "/admins/list",
 	method = "GET",
 	whitelist = {}
 }
@@ -12,10 +12,6 @@ local adminGroups = {
 	["moderator"] = true,
 	["trialmoderator"] = true
 }
-
-function endpoint:init()
-	print("Admins endpoint loaded!")
-end
 
 function endpoint:execute(ip, port, headers, content)
 	if (not ULib) then

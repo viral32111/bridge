@@ -4,10 +4,6 @@ local endpoint = {
 	whitelist = {}
 }
 
-function endpoint:init()
-	print("Addon endpoint loaded!")
-end
-
 function endpoint:execute(ip, port, headers, content)
 	local addons = {}
 

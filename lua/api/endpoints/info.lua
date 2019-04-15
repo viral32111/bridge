@@ -13,10 +13,6 @@ local adminGroups = {
 	["trialmoderator"] = true
 }
 
-function endpoint:init()
-	print("Info endpoint loaded!")
-end
-
 function endpoint:execute(ip, port, headers, content)
 	local tbl = {
 		["ip"] = game.GetIPAddress(),
