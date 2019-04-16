@@ -1,5 +1,7 @@
 require("bromsock")
 
+local SERVER_NAME = "Conspiracy Servers Sandbox API"
+
 local function packetToTable(packet)
 	local packetTbl = {headers={}, content=nil}
 	local raw = packet:ReadStringAll()
@@ -28,7 +30,6 @@ local function packetToTable(packet)
 	return packetTbl
 end
 
-
 local statusCodes = {
 	["200"] = "OK",
 	["400"] = "Bad Request",
@@ -36,12 +37,18 @@ local statusCodes = {
 	["404"] = "Not Found",
 	["405"] = "Method Not Allowed",
 }
-local function easyPacket(code, message)
+local function easyPacket(code, message, headers)
 	local code = tostring(code)
 	local json = util.TableToJSON({["success"]=(code == "200"), ["message"]=message})
 	local packet = BromPacket()
-	packet:WriteLine("HTTP/1.1 " .. code .. " " .. statusCodes[code])
-	packet:WriteLine("Server: Conspiracy Servers")
+	packet:WriteLine("HTTP/1.0 " .. code .. " " .. statusCodes[code])
+	packet:WriteLine("Server: " .. SERVER_NAME)
+	packet:WriteLine("Cache-Control: no-cache")
+	if (headers != nil) then
+		for _, header in pairs(headers) do
+			packet:WriteLine(header)
+		end
+	end
 	packet:WriteLine("Content-Type: application/json")
 	packet:WriteLine("Content-Length: " .. string.len(json))
 	packet:WriteLine("")
@@ -66,39 +73,51 @@ function api.startServer(port)
 		print("API server listening on " .. ip .. ":" .. port .. ".")
 	end
 
+	--print(server:SetOption(0xFFFF, 0x0004, 1))
+
 	server:SetCallbackAccept(function(server, client)
 		client:SetCallbackDisconnect(function(socket)
 			local address = socket:GetIP() .. ":" .. socket:GetPort()
 			print(address .. " -> Disconnected.")
+			api.clients[address] = nil
 		end)
 
 		-- Announce an incoming connection
 		local clientIP = client:GetIP()
 		local address = clientIP .. ":" .. client:GetPort()
 		print(address .. " -> Incoming connection.")
+		api.clients[address] = {address}
 
 		-- Check if they are banned from using the API
 		if (api.IsIPBanned(clientIP)) then
-			print(address .. " is banned from using the API.")
+			print(address .. " -> Banned from using the API.")
 			local ezPacket = easyPacket(403, "You are banned from using the API.")
 			client:Send(ezPacket, true)
+			print(address .. " -> Sent a 403 Forbidden.")
 			client:Disconnect()
 			return
 		end
 
 		client:SetCallbackReceive(function(socket, packet)
-			local didError, details = pcall(function()
-				local clientIP, clientPort = socket:GetIP(), socket:GetPort()
-				local address = clientIP .. ":" .. clientPort
+			local clientIP, clientPort = socket:GetIP(), socket:GetPort()
+			local address = clientIP .. ":" .. clientPort
 
+			local didError, details = pcall(function()
 				local packet = packetToTable(packet)
-				print(packet.method, packet.endpoint, packet.content)
+
+				print(address .. " -> " .. packet.method .. " " .. packet.endpoint)
+				print(address .. " -> " .. tostring(packet.content))
+
+				table.insert(api.clients[address], packet.method)
+				table.insert(api.clients[address], packet.endpoint)
+				table.insert(api.clients[address], packet.content)
 
 				-- Check if the endpoint exists
 				if (not api.endpoints[packet.endpoint]) then
-					print(address .. " attempted to access an invalid endpoint.")
+					print(address .. " -> Attempted to access an invalid endpoint.")
 					local ezPacket = easyPacket(404, "The requested endpoint doesn't exist.")
 					socket:Send(ezPacket, true)
+					print(address .. " -> Sent a 404 Not Found.")
 					socket:Disconnect()
 					return
 				end
@@ -116,8 +135,9 @@ function api.startServer(port)
 
 				-- Correct method?
 				if (packet.method != endpoint.method) then
-					print(address .. " attempted to access an endpoint with the incorrect method.")
-					local ezPacket = easyPacket(405, "You cannot use this method to access this endpoint.")
+					print(address .. " -> Attempted to access an endpoint with the incorrect method.")
+					local ezPacket = easyPacket(405, "You cannot use this method to access this endpoint.", {"Allow: " .. endpoint.method})
+					print(address .. " -> Sent a 405 Method Not Allowed.")
 					socket:Send(ezPacket, true)
 					socket:Disconnect()
 					return
@@ -137,12 +157,14 @@ function api.startServer(port)
 						local json = util.TableToJSON(tbl)
 						local returnPacket = BromPacket()
 						returnPacket:WriteLine("HTTP/1.1 200 OK")
-						returnPacket:WriteLine("Server: Conspiracy Servers")
+						returnPacket:WriteLine("Server: " .. SERVER_NAME)
+						returnPacket:WriteLine("Cache-Control: no-cache")
 						returnPacket:WriteLine("Content-Type: application/json")
 						returnPacket:WriteLine("Content-Length: " .. string.len(json))
 						returnPacket:WriteLine("")
 						returnPacket:WriteLine(json)
 						socket:Send(returnPacket, true)
+						print(address .. " -> Sent a 200 OK.")
 					end
 					socket:Disconnect()
 					return
@@ -150,8 +172,10 @@ function api.startServer(port)
 					if (extra == nil) then
 						local ezPacket = easyPacket(400, "The endpoint denied your request with no further details.")
 						socket:Send(ezPacket, true)
+						print(address .. " -> Sent a 400 Bad Request.")
 					else
 						local ezPacket = easyPacket(400, extra)
+						print(address .. " -> Sent a 400 Bad Request.")
 						socket:Send(ezPacket, true)
 					end
 					socket:Disconnect()
@@ -165,12 +189,14 @@ function api.startServer(port)
 				local json = util.TableToJSON({["success"]=false, ["message"]="An error occured while processing your request."})
 				local returnPacket = BromPacket()
 				returnPacket:WriteLine("HTTP/1.1 500 Internal Server Error")
-				returnPacket:WriteLine("Server: Conspiracy Servers")
+				returnPacket:WriteLine("Server: " .. SERVER_NAME)
+				returnPacket:WriteLine("Cache-Control: no-cache")
 				returnPacket:WriteLine("Content-Type: application/json")
 				returnPacket:WriteLine("Content-Length: " .. string.len(json))
 				returnPacket:WriteLine("")
 				returnPacket:WriteLine(json)
 				socket:Send(returnPacket, true)
+				print(address .. " -> Sent a 400 Internal Server Error.")
 
 				socket:Disconnect()
 			end

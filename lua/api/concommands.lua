@@ -4,7 +4,7 @@ concommand.Add("apiserver_start", function(ply, cmd, args)
 	print("Started API server.")
 
 	if (#args == 0) then
-		api.server = api.startServer(27108)
+		api.server = api.startServer(27028)
 	else
 		local port = tonumber(args[1])
 		api.server = api.startServer(port)
@@ -27,4 +27,5 @@ concommand.Add("apiserver_status", function(ply, cmd, args)
 	if (IsValid(ply)) then return end -- Console only
 
 	print(api.server)
+	PrintTable(api.clients)
 end, nil, "Dumps the status of the API server.", FCVAR_SERVER_CAN_EXECUTE)
