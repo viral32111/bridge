@@ -1,6 +1,6 @@
 require("bromsock")
 
-local SERVER_NAME = "Conspiracy Servers Sandbox API"
+local SERVER_NAME = "Sandbox - Conspiracy Servers API"
 
 local function packetToTable(packet)
 	local packetTbl = {headers={}, content=nil}
@@ -73,8 +73,6 @@ function api.startServer(port)
 		print("API server listening on " .. ip .. ":" .. port .. ".")
 	end
 
-	--print(server:SetOption(0xFFFF, 0x0004, 1))
-
 	server:SetCallbackAccept(function(server, client)
 		client:SetCallbackDisconnect(function(socket)
 			local address = socket:GetIP() .. ":" .. socket:GetPort()
@@ -106,7 +104,11 @@ function api.startServer(port)
 				local packet = packetToTable(packet)
 
 				print(address .. " -> " .. packet.method .. " " .. packet.endpoint)
-				print(address .. " -> " .. tostring(packet.content))
+				if (packet.content != nil) then
+					print(address .. " -> " .. util.TableToJSON(packet.content))
+				else
+					print(address .. " -> " .. tostring(packet.content))
+				end
 
 				table.insert(api.clients[address], packet.method)
 				table.insert(api.clients[address], packet.endpoint)
