@@ -27,11 +27,9 @@ for _, endpointDir in pairs(endpointDirs) do
 	end
 end
 
-hook.Add("InitPostEntity", "initStartHook", function()
-	hook.Add("Think", "startAPI", function()
-		timer.Simple(1, function()
-			api.server = api.startServer(27028)
-		end)
-		hook.Remove("Think", "startAPI")
+hook.Add("Think", "startAPI", function()
+	timer.Simple(1, function()
+		api.server = api.startServer(27028)
 	end)
+	hook.Remove("Think", "startAPI")
 end)
