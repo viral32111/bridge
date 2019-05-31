@@ -1,7 +1,5 @@
 local endpoint = {
-	path = "/addons",
-	method = "GET",
-	whitelist = {}
+	method = api.methods.get
 }
 
 function endpoint:execute(ip, port, headers, content)

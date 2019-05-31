@@ -1,6 +1,6 @@
 require("bromsock")
 
-local SERVER_NAME = "Sandbox - Conspiracy Servers API"
+local SERVER_NAME = api.server.name .. " - Conspiracy Servers API"
 
 local function packetToTable(packet)
 	local packetTbl = {headers={}, content=nil}
@@ -30,12 +30,20 @@ local function packetToTable(packet)
 	return packetTbl
 end
 
+local methodTranslatator = {
+	["GET"] = 1,
+	["POST"] = 2
+}
+
 local statusCodes = {
 	["200"] = "OK",
 	["400"] = "Bad Request",
 	["403"] = "Forbidden",
 	["404"] = "Not Found",
 	["405"] = "Method Not Allowed",
+	-- ["410"] = "Gone",
+	-- ["501"] = "Not Implemented",
+	-- ["503"] = "Service Unavailable",
 }
 local function easyPacket(code, message, headers)
 	local code = tostring(code)
@@ -56,10 +64,11 @@ local function easyPacket(code, message, headers)
 	return packet
 end
 
-function api.startServer(port)
-	local ip = "192.168.0.2"
+function api.startHost(port)
+	local port = tonumber(port)
+	local ip = api.server.ip
 
-	if (api.server) then
+	if (api.host) then
 		print("The API server is already being hosted.")
 		return
 	end
@@ -124,11 +133,12 @@ function api.startServer(port)
 					return
 				end
 
+				-- Get the endpoint
 				local endpoint = api.endpoints[packet.endpoint]
 
 				-- Are they whitelisted?
-				if (#endpoint.whitelist >= 1) and (not endpoint.whitelist[clientIP]) then
-					print(address .. " is not permitted to access to requested endpoint.")
+				if (api.whitelist[clientIP] != true) then
+					print(address .. " -> Not permitted to access to requested endpoint.")
 					local ezPacket = easyPacket(403, "You are not permitted to use this endpoint.")
 					socket:Send(ezPacket, true)
 					socket:Disconnect()
@@ -136,7 +146,7 @@ function api.startServer(port)
 				end
 
 				-- Correct method?
-				if (packet.method != endpoint.method) then
+				if (methodTranslatator[packet.method] != endpoint.method) then
 					print(address .. " -> Attempted to access an endpoint with the incorrect method.")
 					local ezPacket = easyPacket(405, "You cannot use this method to access this endpoint.", {"Allow: " .. endpoint.method})
 					print(address .. " -> Sent a 405 Method Not Allowed.")
@@ -198,7 +208,7 @@ function api.startServer(port)
 				returnPacket:WriteLine("")
 				returnPacket:WriteLine(json)
 				socket:Send(returnPacket, true)
-				print(address .. " -> Sent a 400 Internal Server Error.")
+				print(address .. " -> Sent a 500 Internal Server Error.")
 
 				socket:Disconnect()
 			end

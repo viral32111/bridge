@@ -1,7 +1,5 @@
 local endpoint = {
-	path = "/info",
-	method = "GET",
-	whitelist = {}
+	method = api.methods.get
 }
 
 local adminGroups = {
@@ -29,7 +27,7 @@ function endpoint:execute(ip, port, headers, content)
 	for _, bot in pairs(player.GetBots()) do
 		local struct = {
 			["name"] = bot:Nick(),
-			["id"] = bot:EntIndex(),
+			["id"] = bot:EntIndex()
 		}
 		table.insert(tbl["bots"], struct)
 	end
@@ -42,7 +40,7 @@ function endpoint:execute(ip, port, headers, content)
 			["steamid"] = ply:SteamID64(),
 			["group"] = ply:GetUserGroup(),
 			["time"] = ply:TimeConnected(),
-			["id"] = ply:EntIndex(),
+			["id"] = ply:EntIndex()
 		}
 
 		if (adminGroups[ply:GetUserGroup()]) then

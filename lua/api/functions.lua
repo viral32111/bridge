@@ -1,3 +1,22 @@
+function api.GetEndpoints()
+	local directories = {}
+	local endpoints = {}
+
+	local function findDirectories(path)
+		local files, dirs = file.Find(path .. "/*", "LUA")
+		for _, dir in pairs(dirs) do
+			table.insert(directories, dir)
+			findDirectories(path .. "/" .. dir)
+		end
+		for _, file in pairs(files) do
+			table.insert(endpoints, path .. "/" .. file)
+		end
+	end
+	findDirectories("api/endpoints")
+
+	return endpoints
+end
+
 function api.CreateDatabases()
 	sql.Query("CREATE TABLE bannedIPs (IPAddress VARCHAR(15) NOT NULL PRIMARY KEY, SteamID VARCHAR(24))")
 end

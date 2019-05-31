@@ -1,11 +1,9 @@
 local endpoint = {
-	path = "/admins/list",
-	method = "GET",
-	whitelist = {}
+	method = api.methods.get
 }
 
 local adminGroups = {
-	["founder"] = true,
+	["founders"] = true,
 	["manager"] = true,
 	["superadmin"] = true,
 	["admin"] = true,

@@ -1,9 +1,5 @@
 local endpoint = {
-	path = "/discord",
-	method = "POST",
-	whitelist = {
-		["82.39.51.21"] = true
-	}
+	method = api.methods.post
 }
 
 function endpoint:execute(ip, port, headers, content)
@@ -12,7 +8,7 @@ function endpoint:execute(ip, port, headers, content)
 	elseif not (content["author"] and content["message"] and content["role"] and content["role"]["name"] and content["role"]["color"]) then
 		return false, "Not all arguments were provided."
 	elseif (discordToChat == nil) then
-		return false, "The discord relay is offline."
+		return false, "The discord relay is unavailable right now."
 	end
 
 	local name = content["author"]
