@@ -45,7 +45,7 @@ hook.Add("Think", "startAPI", function()
 	local port = api.server.port
 
 	timer.Simple(1, function()
-		api.host = api.startHost(port)
+		--api.host = api.startHost(port)
 	end)
 	hook.Remove("Think", "startAPI")
 end)
