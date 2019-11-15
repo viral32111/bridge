@@ -9,18 +9,14 @@ api = api or {
 	servers = {
 		sandbox = {name="Sandbox", ip="185.44.78.69", port=27018},
 		spacebuild = {name="Spacebuild", ip="89.34.96.23", port=27108},
-		testing = {name="Testing Server", ip="192.168.0.2", port=27018},
-		alex = {name="Alex's Server", ip="192.168.1.90", port=27019}
+		testing = {name="Testing Server", ip="192.168.0.2", port=27025} -- 82.39.51.21
 	},
 	whitelist = {
 		["82.39.51.21"] = true,
-		["185.141.207.138"] = true,
-		["192.168.0.2"] = true,
-		["192.168.0.3"] = true,
-		["192.168.1.90"] = true
+		["185.141.207.138"] = true
 	}
 }
-api.server = api.servers.testing
+api.server=api.servers.testing
 
 if (api.host) then
 	print("Stopped API server.")
@@ -42,10 +38,8 @@ for _, path in pairs(api.GetEndpoints()) do
 end
 
 hook.Add("Think", "startAPI", function()
-	local port = api.server.port
-
 	timer.Simple(1, function()
-		--api.host = api.startHost(port)
+		api.host=api.startHost(api.server.port)
 	end)
 	hook.Remove("Think", "startAPI")
 end)
