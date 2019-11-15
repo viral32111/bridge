@@ -7,9 +7,9 @@ api = api or {
 		post = 2
 	},
 	servers = {
-		sandbox = {name="Sandbox", ip="185.44.78.69", port=27018},
+		sandbox = {name="Sandbox", ip="185.44.78.69", port=27028},
 		spacebuild = {name="Spacebuild", ip="89.34.96.23", port=27108},
-		testing = {name="Testing Server", ip="192.168.0.2", port=27025} -- 82.39.51.21
+		testing = {name="Testing Server", ip="192.168.0.2", port=27025}
 	},
 	whitelist = {
 		["82.39.51.21"] = true,
