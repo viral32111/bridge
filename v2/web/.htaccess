@@ -1,0 +1,2 @@
+RewriteCond %{REQUEST_URI} ^/api/v\d+\/\w+$
+RewriteRule ^v(\d+)\/(\w+)$ handle.php?version=$1&interface=$2 [QSA,L]
