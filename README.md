@@ -26,9 +26,9 @@ I did attempt to create a second version of the old API that used a central web 
 
 ## Usage
 
-### Python
+### [Python](python/)
 
-The [python](python/) code is a [Python module](https://docs.python.org/3/tutorial/modules.html), below is a concept of how it should be used.
+This is a [Python module](https://docs.python.org/3/tutorial/modules.html), below is a concept of how it should be used.
 
 ```python
 # Import the bridge library
@@ -47,9 +47,9 @@ bridge.setup( "python", receive )
 response = await bridge.send( "cpp", "hello" )
 ```
 
-### C++
+### [C++](cpp/)
 
-The [cpp](cpp/) code is a [Garry's Mod binary module](https://wiki.facepunch.com/gmod/Creating_Binary_Modules), below is a concept of how it should be used.
+This is a [Garry's Mod binary module](https://wiki.facepunch.com/gmod/Creating_Binary_Modules), below is a concept of how it should be used.
 
 ```lua
 -- Import the bridge library
@@ -69,9 +69,9 @@ bridge.setup( "garrysmod", receive )
 bridge.send( "discord", "hello" )
 ```
 
-### Java
+### [Java](java/)
 
-The [java](java/) code is a [Minecraft bukkit plugin](https://dev.bukkit.org/).
+This is a [Minecraft bukkit plugin](https://dev.bukkit.org/).
 
 *I am still learning Java and Minecraft plugin programming, so I have no idea how I would go about doing this yet!*
 
