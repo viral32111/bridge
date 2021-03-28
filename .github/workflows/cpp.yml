@@ -11,4 +11,4 @@ jobs:
     - name: Clone Repository
       uses: actions/checkout@v2
     - name: Compile Source
-      run: g++ -Wall cpp/main.cpp
+      run: g++ -Wall ./cpp/test.cpp
