@@ -1,0 +1,14 @@
+name: C++ Compile
+on:
+  push:
+    paths:
+      - 'cpp/**'
+jobs:
+  install:
+    name: Compile on Ubuntu
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone Repository
+      uses: actions/checkout@v2
+    - name: Compile Source
+      run: g++ -Wall cpp/main.cpp
