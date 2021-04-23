@@ -1,14 +1,30 @@
 // https://github.com/troydhanson/network/blob/master/unixdomain/01.basic/srv.c
-// g++ -Wall server.cpp -o /tmp/server && /tmp/server
+// https://github.com/troydhanson/network/blob/master/unixdomain/01.basic/cli.c
+// g++ -Wall peertopeer.cpp -o /tmp/peertopeer && /tmp/peertopeer
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/socket.h>
-#include <sys/un.h>
+//#include <stdlib.h>
+//#include <unistd.h>
+//#include <sys/socket.h>
+//#include <sys/un.h>
 
+/*void _receiveData() {
+	
+}*/
+
+void bridge_setup( const char clientIdentifier, char *receiveCallback ) {
+	printf( "bridge_setup" );
+}
+
+char *bridge_send( const char destinationClient, char *messageText ) {
+	printf( "bridge_send" );
+	char *response = strdup( "placeholder" );
+	return response;
+}
+
+/*
 int main() {
-	char socketPath[] = "/tmp/socket";
+	char serverSocketPath[] = "/tmp/server_socket";
 	struct sockaddr_un unixDomainSocketAddress;
 
 	int serverSocket = socket( AF_UNIX, SOCK_STREAM, 0 );
@@ -19,8 +35,8 @@ int main() {
 
 	memset( &unixDomainSocketAddress, 0, sizeof( unixDomainSocketAddress ) );
 	unixDomainSocketAddress.sun_family = AF_UNIX;
-	strncpy( unixDomainSocketAddress.sun_path, socketPath, sizeof( unixDomainSocketAddress.sun_path ) - 1 );
-	unlink( socketPath );
+	strncpy( unixDomainSocketAddress.sun_path, serverSocketPath, sizeof( unixDomainSocketAddress.sun_path ) - 1 );
+	unlink( serverSocketPath );
 
 	int bindResult = bind( serverSocket, ( struct sockaddr* ) &unixDomainSocketAddress, sizeof( unixDomainSocketAddress ) );
 	if ( bindResult == -1 ) {
@@ -59,3 +75,4 @@ int main() {
 
 	return 0;
 }
+*/
