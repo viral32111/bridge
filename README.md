@@ -77,7 +77,7 @@ This is a [Minecraft bukkit plugin](https://dev.bukkit.org/).
 
 ## License
 
-Copyright (C) 2019 - 2021 [viral32111](https://viral32111.com).
+Copyright (C) 2019 - 2022 [viral32111](https://viral32111.com).
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
